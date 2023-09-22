@@ -1,0 +1,8 @@
+@PACKAGE_INIT@
+include(CMakeFindDependencyMacro)
+
+set(OPENFX_INCLUDE_DIRS "@CMAKE_INSTALL_PREFIX@/include")
+find_dependency(expat CONFIG REQUIRED)
+find_dependency(OpenGL REQUIRED)
+
+include("${CMAKE_CURRENT_LIST_DIR}/OpenFXTargets.cmake")

@@ -11,6 +11,16 @@ if(NOT MSVC)
 	set_target_properties(OfxSupport PROPERTIES COMPILE_FLAGS "-fPIC")
 endif()
 
-target_include_directories(OfxSupport PUBLIC
+target_include_directories(OfxSupport PRIVATE
 	${OFX_HEADER_DIR}
 	${OFX_SUPPORT_HEADER_DIR})
+
+target_include_directories(OfxSupport INTERFACE
+    $<BUILD_INTERFACE:${OFX_HEADER_DIR}>
+    $<BUILD_INTERFACE:${OFX_SUPPORT_HEADER_DIR}>
+    $<INSTALL_INTERFACE:include>)
+
+install(FILES
+	${OFX_HEADER_FILES}
+	${OFX_SUPPORT_HEADER_FILES}
+	DESTINATION include)

@@ -1,0 +1,14 @@
+{
+	"name": "openfx",
+	"version": "1.4.0",
+	"description": "OpenFX image processing plug-in standard.",
+  	"homepage": "https://github.com/AcademySoftwareFoundation/openfx",
+	"dependencies": [
+		"opengl",
+		"expat"
+	],
+	"overrides": [
+        { "name": "opengl", "version-string": "2022-12-04#3" },
+        { "name": "expat", "version": "2.5.0#3" }
+    ]
+}

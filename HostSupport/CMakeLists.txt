@@ -16,7 +16,16 @@ endif()
 
 target_link_libraries(OfxHost PUBLIC expat::expat)
 
-target_include_directories(OfxHost PUBLIC
+target_include_directories(OfxHost PRIVATE
 	${OFX_HEADER_DIR}
-	${OFX_HOSTSUPPORT_HEADER_DIR}
-	${expat_INCLUDE_DIR})
+	${OFX_HOSTSUPPORT_HEADER_DIR})
+
+target_include_directories(OfxHost INTERFACE
+    $<BUILD_INTERFACE:${OFX_HEADER_DIR}>
+    $<BUILD_INTERFACE:${OFX_HOSTSUPPORT_HEADER_DIR}>
+    $<INSTALL_INTERFACE:include>)
+
+install(FILES
+	${OFX_HEADER_FILES}
+	${OFX_HOSTSUPPORT_HEADER_FILES}
+	DESTINATION include)

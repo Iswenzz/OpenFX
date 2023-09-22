@@ -8,6 +8,9 @@ add_definitions(-D_HAS_AUTO_PTR_ETC)
 if(APPLE)
    set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
 endif()
+if(WIN32)
+	add_definitions(-DWINDOWS -DNOMINMAX)
+endif()
 
 option(BUILD_EXAMPLE_PLUGINS "Build example plugins" OFF)
 option(OFX_SUPPORTS_OPENGLRENDER "Build with support for GPU rendering (OpenGL/CUDA/Metal/OpenCL)" ON)
@@ -19,9 +22,9 @@ endif()
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake ${CMAKE_BINARY_DIR} )
 
-# Conan packages
-find_package(EXPAT)
-find_package(opengl_system)
+# Dependencies
+find_package(expat CONFIG REQUIRED)
+find_package(OpenGL REQUIRED)
 
 # Macros
 set(OFX_SUPPORT_SYMBOLS_DIR ${PROJECT_SOURCE_DIR}/symbols)
@@ -43,3 +46,31 @@ add_subdirectory(Support)
 if(BUILD_EXAMPLE_PLUGINS)
   add_subdirectory(Examples)
 endif()
+
+# Install
+install(TARGETS OfxSupport OfxHost
+	EXPORT OpenFXTargets
+	RUNTIME DESTINATION bin
+	LIBRARY DESTINATION lib
+	ARCHIVE DESTINATION lib)
+
+install(DIRECTORY ${OFX_SUPPORT_SYMBOLS_DIR}/ DESTINATION symbols)
+
+# Package
+include(CMakePackageConfigHelpers)
+
+export(EXPORT OpenFXTargets
+	FILE "${CMAKE_CURRENT_BINARY_DIR}/OpenFXTargets.cmake"
+	NAMESPACE OpenFX::)
+
+configure_package_config_file(cmake/OpenFXConfig.cmake.in
+	"${CMAKE_CURRENT_BINARY_DIR}/OpenFXConfig.cmake"
+	INSTALL_DESTINATION lib/cmake/OpenFX)
+
+install(EXPORT OpenFXTargets
+	FILE OpenFXTargets.cmake
+	NAMESPACE OpenFX::
+	DESTINATION lib/cmake/OpenFX)
+
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/OpenFXConfig.cmake"
+	DESTINATION lib/cmake/OpenFX)
